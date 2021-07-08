@@ -66,11 +66,11 @@ const getData = async () => { // асинхронная стрелочная ф�
   }
 }
 
-const getGoods = (callback, value) => { // получаем данные с сервера
+const getGoods = (callback, prop, value) => { // получаем данные с сервера
   getData()
     .then(data => {  // когда getData отработает(вернет return) отработает then
       if (value) {
-        callback(data.filter(item => item.category === value)) // будут возвращаться те данные, у которых категория совпадает
+        callback(data.filter(item => item[prop] === value)) // будут возвращаться те данные, у которых категория совпадает
       } else {
         callback(data)
       }
@@ -91,13 +91,18 @@ cartOverlay.addEventListener('click', event => {
   }
 })
 
-
+// страница товаров
 try { // если код внутри try вызывает ошибку, то переходит в catch
   const goodsList = document.querySelector('.goods__list')
 
   if (!goodsList) { // если находимся не на странице гудлист
     throw `This is not a goods page!`
   }
+  const goodsTitle = document.querySelector('.goods__title')
+  const changeTitle = () => {
+    goodsTitle.textContent = document.querySelector(`[href*="#${hash}"]`).textContent
+  }
+
 
   const createCard = ({ id, preview, cost, brand, name, sizes }) => { // список необходимых идентификаторов
 
@@ -149,20 +154,47 @@ try { // если код внутри try вызывает ошибку, то п
   
   window.addEventListener('hashchange', () => { // при изменении хеша будут происходить действия
     hash = location.hash.substring(1)
-    getGoods(renderGoodsList, hash)
-    let goodsTitle = document.querySelector('.goods__title')
-    if (hash === 'men') {
-      goodsTitle.textContent = 'Мужчинам'
-    } else if (hash === 'women') {
-      goodsTitle.textContent = 'Женщинам'
-    } else if (hash === 'kids') {
-      goodsTitle.textContent = 'Детям'
-    } else {
-      goodsTitle.textContent = ''
-    }
+    getGoods(renderGoodsList, 'category', hash)
+    changeTitle()
+    // if (hash === 'men') {
+    //   goodsTitle.textContent = 'Мужчинам'
+    // } else if (hash === 'women') {
+    //   goodsTitle.textContent = 'Женщинам'
+    // } else if (hash === 'kids') {
+    //   goodsTitle.textContent = 'Детям'
+    // } else {
+    //   goodsTitle.textContent = ''
+    // }
   })
 
-  getGoods(renderGoodsList, hash)
+  getGoods(renderGoodsList, 'category', hash)
+
+} catch (err) {
+  console.warn(err)
+}
+
+// страница товара
+
+try {
+  if (!document.querySelector('.card-good')) {
+    throw 'This is not card good page'
+  }
+
+  const cardGoodImage = document.querySelector('.card-good__image')
+  const cardGoodBrand = document.querySelector('.card-good__brand')
+  const cardGoodTitle = document.querySelector('.card-good__title')
+  const cardGoodPrice = document.querySelector('.card-good__price')
+  const cardGoodColor = document.querySelector('.card-good__color')
+  const cardGoodColorList = document.querySelector('.card-good__color-list')
+  const cardGoodSizes = document.querySelector('.card-good__sizes')
+  const cardGoodSizesList = document.querySelector('.card-good__sizes-list')
+  const cardGoodBuy = document.querySelector('.card-good__buy')
+
+  const renderCardGood = ({brand, name, cost, color, sizes, photo}) => {
+    console.log(brand)
+  }
+  
+  getGoods(renderCardGood, 'id', hash)
 
 } catch (err) {
   console.warn(err)
