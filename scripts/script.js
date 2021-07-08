@@ -146,11 +146,20 @@ try { // если код внутри try вызывает ошибку, то п
     // });
   }
 
-  let title = document.querySelector('.goods__title')
-
+  
   window.addEventListener('hashchange', () => { // при изменении хеша будут происходить действия
     hash = location.hash.substring(1)
     getGoods(renderGoodsList, hash)
+    let goodsTitle = document.querySelector('.goods__title')
+    if (hash === 'men') {
+      goodsTitle.textContent = 'Мужчинам'
+    } else if (hash === 'women') {
+      goodsTitle.textContent = 'Женщинам'
+    } else if (hash === 'kids') {
+      goodsTitle.textContent = 'Детям'
+    } else {
+      goodsTitle.textContent = ''
+    }
   })
 
   getGoods(renderGoodsList, hash)
